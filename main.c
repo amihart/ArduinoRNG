@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include "/home/home/Projects/SoftwareI2C.c"
 
-
+//ssd1306 stuff is for the LCD 
 
 uint8_t ssd1306_send_command(uint8_t b2s)
 {
@@ -246,6 +246,7 @@ void ssd1306_putstr(uint8_t *s)
   }
 }
 
+//this is for ChaCha20 cipher
 uint8_t chachabytes[64];
 uint8_t chachaposition;
 uint32_t chachablock;
@@ -331,6 +332,8 @@ void dochacha
 	CB(cc);
 	S(cc, chachabytes);
 }
+
+//this is for SHA-256 stuff
 
 uint32_t rr(uint32_t a, uint32_t b)
 {
@@ -441,7 +444,11 @@ void sha256_process_block(uint32_t *p)
 
 }
 
-
+//this is for Shannon entropy test
+//	randomness = independence, not uniformity
+//	but Von Neumann extractor should generate a uniform
+//	distribution if the samples are independent, so it
+//	acts as an indirect measure of independence
 uint8_t EntropyTest_GrabBit(uint8_t *from, uint32_t position, uint32_t size)
 {
     if (position / 8 >= size) return 0;
@@ -486,6 +493,7 @@ double EntropyTest_Once(uint8_t *b, uint32_t size, uint8_t level)
     return score;
 }
 
+//Von Neumann extractor
 uint8_t extract_from_analog(uint8_t type)
 {
     uint8_t a, b;
@@ -515,6 +523,7 @@ uint8_t extract()
   }
 }
 
+//Stuff to apply our random numbers to sha256 and chacha20
 
 uint8_t buff[320];
 
@@ -632,6 +641,8 @@ void loop()
     }
     if (!(lowest >= 0.99))
     {
+      //not sure if the sha256 step is really necessary,
+      //it is probably good enough with just ChaCha20
       sha256_apply_to_all();
       lowest = 1;
       shaAlreadyApplied = 1;
